@@ -1,3 +1,3 @@
 import app from "./src/app";
 
-app.server.listen(3000);
+export default app.server.listen(3000);
