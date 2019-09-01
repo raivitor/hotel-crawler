@@ -1,4 +1,4 @@
-# Hotel Crawler by Next Dev from AskSuit's DreamTeam
+# Hotel Crawler by Next Dev from AskSuite's DreamTeam
 
 ## Project setup
 
