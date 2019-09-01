@@ -15,7 +15,10 @@
     "puppeteer": "^1.19.0"
   },
   "devDependencies": {
+    "@sucrase/jest-plugin": "^2.0.0",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.1",
-    "sucrase": "^3.10.1"
+    "sucrase": "^3.10.1",
+    "supertest": "^4.0.2"
   }
 }
