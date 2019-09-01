@@ -1,5 +1,24 @@
 # hotel-crawler
 
+## Project setup
+
+```
+yarn install
+yarn start
+```
+
+OR
+
+```
+docker-compose up
+```
+
+## Run tests
+
+```
+yarn run test
+```
+
 ## **Find hotel rooms**
 
 Returns json data with hotel rooms.
@@ -25,7 +44,7 @@ Returns json data with hotel rooms.
 
   ```
   {
-    "checkin": "01/09/2019", // dd/MM/yy
+    "checkin": "01/09/2019", // DD/MM/YYYY
     "checkout": "03/09/2019"
   }
   ```
