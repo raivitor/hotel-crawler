@@ -1,5 +1,6 @@
 import cheerio from "cheerio";
 import puppeteer from "puppeteer";
+import { validationResult } from "express-validator";
 
 const BASE_URL = "https://myreservations.omnibees.com";
 
@@ -29,6 +30,10 @@ const formatDate = date => {
 };
 
 const findRoomsByDate = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(422).json({ errors: errors.array() });
+
   try {
     const { checkin, checkout } = req.body;
     const $ = cheerio.load(
