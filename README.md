@@ -1,4 +1,4 @@
-# hotel-crawler
+# Hotel Crawler by Next Dev from AskSuit's DeamTeam
 
 ## Project setup
 
@@ -19,7 +19,7 @@ docker-compose up
 yarn run test
 ```
 
-## **Find hotel rooms**
+## API Description
 
 Returns json data with hotel rooms.
 
