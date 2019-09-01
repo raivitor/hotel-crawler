@@ -1,0 +1,20 @@
+{
+  "name": "hotel-crawler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": "git@github.com:raivitor/hotel-crawler.git",
+  "author": "Rai Vitor <raivitor@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.2.0",
+    "puppeteer": "^1.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "sucrase": "^3.10.1"
+  }
+}
