@@ -95,7 +95,7 @@ const findRoomsByDate = async (req, res) => {
         .find("a.fancybox-thumbs")
         .each(function(i, e) {
           imgs.push(
-            `${BASE_URL}${$(item)
+            `${BASE_URL}${$(e)
               .find("img")
               .attr("src")}`
           );

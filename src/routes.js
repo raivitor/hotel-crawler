@@ -3,6 +3,14 @@ import CrawlerCtrl from "./controllers/CrawlerCtrl.js";
 const { check } = require("express-validator");
 
 const routes = new Router();
+routes.use(function(req, res, next){
+  res.setTimeout(120000, function(){
+    console.log('Request has timed out.');
+    res.send(408);
+  });
+  
+  next();
+});
 
 const validator = [
   check("checkin")
