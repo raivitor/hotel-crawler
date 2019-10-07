@@ -1,12 +1,12 @@
 import cheerio from "cheerio";
 import puppeteer from "puppeteer";
-import { validationResult } from "express-validator";
+import {validationResult} from "express-validator";
 
 const BASE_URL = "https://myreservations.omnibees.com";
-
+let url = '';
 const getData = async (checkin = null, checkout = null) => {
   try {
-    const url = `${BASE_URL}/default.aspx?q=5462&version=MyReservation#/&diff=false&CheckIn=${checkin}&CheckOut=${checkout}`;
+    url = `${BASE_URL}/default.aspx?q=5462&version=MyReservation#/&diff=false&CheckIn=${checkin}&CheckOut=${checkout}`;
 
     const browser = await puppeteer.launch({
       args: ["--no-sandbox"]
@@ -25,56 +25,90 @@ const getData = async (checkin = null, checkout = null) => {
 };
 
 const formatDate = date => {
-  const dateFormated = date.split("/").join("");
-  return dateFormated;
+  return date.split("/").join("");
 };
 
 const findRoomsByDate = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(422).json({ errors: errors.array() });
-
+  
   try {
     const { checkin, checkout } = req.body;
     const $ = cheerio.load(
       await getData(formatDate(checkin), formatDate(checkout))
     );
+    
     const rooms = [];
-
-    $("div.roomExcerpt").each(function(i, e) {
-      let x = {};
-
-      x.name = $(this)
+    const items = [];
+  
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox"]
+    });
+  
+    
+    $("div.roomExcerpt").each( async (index, item) => {
+      items.push(item);
+    });
+    const promises = items.map( async (item) => {
+      const modalItens = [];
+      const services = [];
+      const imgs = [];
+      const modalUrl = BASE_URL + $(item).find("h5 a").attr("href");
+     
+      
+      let room = {};
+  
+      room.name = $(item)
         .find("h5 a")
         .text()
         .trim();
+      
+      room.link = url;
+      const page = await browser.newPage();
+      await page.goto(modalUrl, { waitUntil: "networkidle0" });
+      const modalContent = await page.content();
+      const cheerioPage = cheerio.load(modalContent);
+      cheerioPage(".columnLeft").each( async (index, item) => {
+        modalItens.push(item)
+      });
+      
+      modalItens.map( item => {
+        room.fullDescription = cheerioPage(item).find('.roomDescription').text().trim();
+        cheerioPage(item).find('.room_amenities li').each((index, item) => {
+          services.push(cheerioPage(item).text().trim())
+        })
+      });
+      room.service = services;
 
-      x.price = $(this)
+      room.price = $(item)
         .find("h6.bestPriceTextColor")
         .text()
         .trim();
-
-      x.description = $(this)
+  
+      room.description = $(item)
         .find("a.description")
         .text()
         .trim();
 
-      let img = [];
-
-      $(this)
+      $(item)
         .find("a.fancybox-thumbs")
         .each(function(i, e) {
-          img.push(
-            `${BASE_URL}${$(this)
+          imgs.push(
+            `${BASE_URL}${$(item)
               .find("img")
               .attr("src")}`
           );
         });
-
-      x.image = img;
-      rooms.push(x);
+  
+      room.image = imgs;
+      rooms.push(room);
     });
-    return res.json(rooms);
+  
+    await Promise.all(promises);
+    await browser.close();
+    
+    return await res.json(rooms);
   } catch (error) {
     console.log(error);
   }
